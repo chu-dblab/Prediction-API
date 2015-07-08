@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PredictionModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CG">
+          <Key>
+            <PropertyRef Name="Cname" />
+            <PropertyRef Name="Gname" />
+          </Key>
+          <Property Name="Cname" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Gname" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="D">
+          <Key>
+            <PropertyRef Name="DID" />
+          </Key>
+          <Property Name="DID" Type="int" Nullable="false" />
+          <Property Name="UName" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="UURL" Type="nchar" MaxLength="85" Nullable="false" />
+          <Property Name="DName" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="DURL" Type="nchar" MaxLength="85" Nullable="false" />
+          <Property Name="Salary" Type="int" Nullable="false" />
+          <Property Name="SalaryURL" Type="nchar" MaxLength="85" Nullable="false" />
+          <Property Name="ELLevel" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="MinScore" Type="float" Nullable="false" />
+          <Property Name="TL1" Type="smallint" Nullable="false" />
+          <Property Name="TL2" Type="smallint" Nullable="false" />
+          <Property Name="TL3" Type="smallint" Nullable="false" />
+          <Property Name="TL4" Type="smallint" Nullable="false" />
+          <Property Name="TL5" Type="smallint" Nullable="false" />
+          <Property Name="TL6" Type="smallint" Nullable="false" />
+          <Property Name="EW1" Type="float" Nullable="false" />
+          <Property Name="EW2" Type="float" Nullable="false" />
+          <Property Name="EW3" Type="float" Nullable="false" />
+          <Property Name="EW4" Type="float" Nullable="false" />
+          <Property Name="EW5" Type="float" Nullable="false" />
+          <Property Name="EW6" Type="float" Nullable="false" />
+          <Property Name="EW7" Type="float" Nullable="false" />
+          <Property Name="EW8" Type="float" Nullable="false" />
+          <Property Name="EW9" Type="float" Nullable="false" />
+          <Property Name="EW10" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DC">
+          <Key>
+            <PropertyRef Name="DID" />
+            <PropertyRef Name="Cname" />
+          </Key>
+          <Property Name="DID" Type="int" Nullable="false" />
+          <Property Name="Cname" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="E103">
+          <Key>
+            <PropertyRef Name="Ename" />
+            <PropertyRef Name="Score" />
+          </Key>
+          <Property Name="Ename" Type="nchar" MaxLength="4" Nullable="false" />
+          <Property Name="Score" Type="int" Nullable="false" />
+          <Property Name="Percent" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="E104">
+          <Key>
+            <PropertyRef Name="Ename" />
+            <PropertyRef Name="Score" />
+          </Key>
+          <Property Name="Ename" Type="nchar" MaxLength="4" Nullable="false" />
+          <Property Name="Score" Type="int" Nullable="false" />
+          <Property Name="Percent" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="T">
+          <Key>
+            <PropertyRef Name="TName" />
+          </Key>
+          <Property Name="TName" Type="nchar" MaxLength="4" Nullable="false" />
+          <Property Name="Grade1" Type="int" Nullable="false" />
+          <Property Name="Grade2" Type="int" Nullable="false" />
+          <Property Name="Grade3" Type="int" Nullable="false" />
+          <Property Name="Grade4" Type="int" Nullable="false" />
+          <Property Name="Grade5" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__DC__DID__21B6055D">
+          <End Role="D" Type="Self.D" Multiplicity="1" />
+          <End Role="DC" Type="Self.DC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="D">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="DC">
+              <PropertyRef Name="DID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PredictionModelStoreContainer">
+          <EntitySet Name="CG" EntityType="Self.CG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D" EntityType="Self.D" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DC" EntityType="Self.DC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="E103" EntityType="Self.E103" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="E104" EntityType="Self.E104" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T" EntityType="Self.T" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__DC__DID__21B6055D" Association="Self.FK__DC__DID__21B6055D">
+            <End Role="D" EntitySet="D" />
+            <End Role="DC" EntitySet="DC" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PredictionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CG">
+          <Key>
+            <PropertyRef Name="Cname" />
+            <PropertyRef Name="Gname" />
+          </Key>
+          <Property Name="Cname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Gname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="D">
+          <Key>
+            <PropertyRef Name="DID" />
+          </Key>
+          <Property Name="DID" Type="Int32" Nullable="false" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="UURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="DName" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="DURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Salary" Type="Int32" Nullable="false" />
+          <Property Name="SalaryURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="ELLevel" Type="String" MaxLength="1" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="MinScore" Type="Double" Nullable="false" />
+          <Property Name="TL1" Type="Int16" Nullable="false" />
+          <Property Name="TL2" Type="Int16" Nullable="false" />
+          <Property Name="TL3" Type="Int16" Nullable="false" />
+          <Property Name="TL4" Type="Int16" Nullable="false" />
+          <Property Name="TL5" Type="Int16" Nullable="false" />
+          <Property Name="TL6" Type="Int16" Nullable="false" />
+          <Property Name="EW1" Type="Double" Nullable="false" />
+          <Property Name="EW2" Type="Double" Nullable="false" />
+          <Property Name="EW3" Type="Double" Nullable="false" />
+          <Property Name="EW4" Type="Double" Nullable="false" />
+          <Property Name="EW5" Type="Double" Nullable="false" />
+          <Property Name="EW6" Type="Double" Nullable="false" />
+          <Property Name="EW7" Type="Double" Nullable="false" />
+          <Property Name="EW8" Type="Double" Nullable="false" />
+          <Property Name="EW9" Type="Double" Nullable="false" />
+          <Property Name="EW10" Type="Double" Nullable="false" />
+          <NavigationProperty Name="DCs" Relationship="Self.FK__DC__DID__21B6055D" FromRole="D" ToRole="DC" />
+        </EntityType>
+        <EntityType Name="DC">
+          <Key>
+            <PropertyRef Name="DID" />
+            <PropertyRef Name="Cname" />
+          </Key>
+          <Property Name="DID" Type="Int32" Nullable="false" />
+          <Property Name="Cname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="D" Relationship="Self.FK__DC__DID__21B6055D" FromRole="DC" ToRole="D" />
+        </EntityType>
+        <EntityType Name="E103">
+          <Key>
+            <PropertyRef Name="Ename" />
+            <PropertyRef Name="Score" />
+          </Key>
+          <Property Name="Ename" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
+          <Property Name="Percent" Type="Double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="E104">
+          <Key>
+            <PropertyRef Name="Ename" />
+            <PropertyRef Name="Score" />
+          </Key>
+          <Property Name="Ename" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
+          <Property Name="Percent" Type="Double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="T">
+          <Key>
+            <PropertyRef Name="TName" />
+          </Key>
+          <Property Name="TName" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Grade1" Type="Int32" Nullable="false" />
+          <Property Name="Grade2" Type="Int32" Nullable="false" />
+          <Property Name="Grade3" Type="Int32" Nullable="false" />
+          <Property Name="Grade4" Type="Int32" Nullable="false" />
+          <Property Name="Grade5" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__DC__DID__21B6055D">
+          <End Role="D" Type="Self.D" Multiplicity="1" />
+          <End Role="DC" Type="Self.DC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="D">
+              <PropertyRef Name="DID" />
+            </Principal>
+            <Dependent Role="DC">
+              <PropertyRef Name="DID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PredictionEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CGs" EntityType="Self.CG" />
+          <EntitySet Name="D" EntityType="Self.D" />
+          <EntitySet Name="DCs" EntityType="Self.DC" />
+          <EntitySet Name="E103" EntityType="Self.E103" />
+          <EntitySet Name="E104" EntityType="Self.E104" />
+          <EntitySet Name="T" EntityType="Self.T" />
+          <AssociationSet Name="FK__DC__DID__21B6055D" Association="Self.FK__DC__DID__21B6055D">
+            <End Role="D" EntitySet="D" />
+            <End Role="DC" EntitySet="DCs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PredictionModelStoreContainer" CdmEntityContainer="PredictionEntities">
+          <EntitySetMapping Name="CGs">
+            <EntityTypeMapping TypeName="PredictionModel.CG">
+              <MappingFragment StoreEntitySet="CG">
+                <ScalarProperty Name="Cname" ColumnName="Cname" />
+                <ScalarProperty Name="Gname" ColumnName="Gname" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D">
+            <EntityTypeMapping TypeName="PredictionModel.D">
+              <MappingFragment StoreEntitySet="D">
+                <ScalarProperty Name="DID" ColumnName="DID" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UURL" ColumnName="UURL" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="DURL" ColumnName="DURL" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="SalaryURL" ColumnName="SalaryURL" />
+                <ScalarProperty Name="ELLevel" ColumnName="ELLevel" />
+                <ScalarProperty Name="MinScore" ColumnName="MinScore" />
+                <ScalarProperty Name="TL1" ColumnName="TL1" />
+                <ScalarProperty Name="TL2" ColumnName="TL2" />
+                <ScalarProperty Name="TL3" ColumnName="TL3" />
+                <ScalarProperty Name="TL4" ColumnName="TL4" />
+                <ScalarProperty Name="TL5" ColumnName="TL5" />
+                <ScalarProperty Name="TL6" ColumnName="TL6" />
+                <ScalarProperty Name="EW1" ColumnName="EW1" />
+                <ScalarProperty Name="EW2" ColumnName="EW2" />
+                <ScalarProperty Name="EW3" ColumnName="EW3" />
+                <ScalarProperty Name="EW4" ColumnName="EW4" />
+                <ScalarProperty Name="EW5" ColumnName="EW5" />
+                <ScalarProperty Name="EW6" ColumnName="EW6" />
+                <ScalarProperty Name="EW7" ColumnName="EW7" />
+                <ScalarProperty Name="EW8" ColumnName="EW8" />
+                <ScalarProperty Name="EW9" ColumnName="EW9" />
+                <ScalarProperty Name="EW10" ColumnName="EW10" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DCs">
+            <EntityTypeMapping TypeName="PredictionModel.DC">
+              <MappingFragment StoreEntitySet="DC">
+                <ScalarProperty Name="DID" ColumnName="DID" />
+                <ScalarProperty Name="Cname" ColumnName="Cname" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="E103">
+            <EntityTypeMapping TypeName="PredictionModel.E103">
+              <MappingFragment StoreEntitySet="E103">
+                <ScalarProperty Name="Ename" ColumnName="Ename" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="E104">
+            <EntityTypeMapping TypeName="PredictionModel.E104">
+              <MappingFragment StoreEntitySet="E104">
+                <ScalarProperty Name="Ename" ColumnName="Ename" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T">
+            <EntityTypeMapping TypeName="PredictionModel.T">
+              <MappingFragment StoreEntitySet="T">
+                <ScalarProperty Name="TName" ColumnName="TName" />
+                <ScalarProperty Name="Grade1" ColumnName="Grade1" />
+                <ScalarProperty Name="Grade2" ColumnName="Grade2" />
+                <ScalarProperty Name="Grade3" ColumnName="Grade3" />
+                <ScalarProperty Name="Grade4" ColumnName="Grade4" />
+                <ScalarProperty Name="Grade5" ColumnName="Grade5" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
