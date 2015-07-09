@@ -41,12 +41,5 @@ namespace PredictionAPI.Controllers.api
             };
             return result;
         }
-
-        //TODO:
-        [NonAction]
-        private JObject jsonEncode()
-        {
-            return null;
-        }
     }
 }
