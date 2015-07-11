@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PredictionModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="PredictionModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CG">
           <Key>
             <PropertyRef Name="Gname" />
@@ -108,7 +108,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="PredictionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="PredictionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="CG">
           <Key>
             <PropertyRef Name="Gname" />
@@ -199,7 +199,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="PredictionEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CG" EntityType="Self.CG" />
+          <EntitySet Name="CGs" EntityType="Self.CG" />
           <EntitySet Name="D" EntityType="Self.D" />
           <EntitySet Name="DCs" EntityType="Self.DC" />
           <EntitySet Name="E103" EntityType="Self.E103" />
@@ -216,7 +216,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="PredictionModelStoreContainer" CdmEntityContainer="PredictionEntities">
-          <EntitySetMapping Name="CG">
+          <EntitySetMapping Name="CGs">
             <EntityTypeMapping TypeName="PredictionModel.CG">
               <MappingFragment StoreEntitySet="CG">
                 <ScalarProperty Name="Gname" ColumnName="Gname" />

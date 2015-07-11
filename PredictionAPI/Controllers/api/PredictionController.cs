@@ -19,7 +19,7 @@ namespace PredictionAPI.Controllers.api
         {
             using(PredictionEntities predict = new PredictionEntities())
             {
-                var result = from groups in predict.CG
+                var result = from groups in predict.CGs
                              select groups.Gname;
                 var data = new HttpResponseMessage(HttpStatusCode.OK)
                 {

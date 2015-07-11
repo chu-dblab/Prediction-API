@@ -24,7 +24,7 @@ namespace PredictionAPI.Models
     //} 
     public class DataOperation
     {
-        private string conStr = "Data Source=DBLAB6249;Initial Catalog=Prediction;Integrated Security=True";
+        private string conStr = "Data Source=CSIE;Initial Catalog=Prediction;Integrated Security=True";
         private SqlConnection conn;
         private DataTable dt;
         public DataOperation()
@@ -57,7 +57,6 @@ namespace PredictionAPI.Models
                 buffer.Fill(dt);
                 score104.Add(dt.Rows[0]["Score"]);
                 dt.Clear();
-                buffer.Dispose();
             }
             buffer.Dispose();
             this.conn.Close();
@@ -169,12 +168,12 @@ namespace PredictionAPI.Models
                     +score103[4].ToString()+"*D.EW5+"+score103[5].ToString()+"*D.EW6+"
                     +score103[6].ToString()+"*D.EW7+"+score103[7].ToString()+"*D.EW8+"
                     +score103[8].ToString()+"*D.EW9+"+score103[9].ToString()+"*D.EW10)*1.1 "+
-                    "AND D.Salary >= "+expectedSalary.ToString()+" AND (D.EW1 = 0 OR "+ast.Chinese.ToString()+" <> NULL) "+
-                    "AND (D.EW2 =0 OR " + ast.English.ToString() + " <> NULL) AND (D.EW3 = 0 OR " + ast.Math_A.ToString() + " <> NULL) "+
-                    "AND (D.EW4 =0 OR "+ast.Math_B.ToString()+" <> NULL) AND (D.EW5 = 0 OR " + ast.History.ToString()+") "+
-                    "ANS (D.EW6 = 0 OR "+ast.Geographic.ToString() +" <> NULL) AND (D.EW7 = 0 OR "+ast.Citizen_and_Society.ToString()+" <> NULL) "+
-                    "AND (D.EW8 = 0 OR "+ast.Physics.ToString()+" <> NULL) AND (D.EW9 = 0 OR "+ast.Chemistry.ToString()+" <> NULL) "+
-                    "AND (D.EW10 = 0 OR "+ast.Biology.ToString()+" <> NULL) ORDER BY D.Salary DESC;";
+                    "AND D.Salary >= " + expectedSalary.ToString() + " AND (D.EW1 = 0 OR '" + ast.Chinese.ToString() + "' IS NOT NULL) " +
+                    "AND (D.EW2 =0 OR '" + ast.English.ToString() + "' IS NOT NULL) AND (D.EW3 = 0 OR '" + ast.Math_A.ToString() + "' IS NOT NULL) " +
+                    "AND (D.EW4 =0 OR '" + ast.Math_B.ToString() + "' IS NOT NULL) AND (D.EW5 = 0 OR '" + ast.History.ToString() + "' IS NOT NULL) " +
+                    "AND (D.EW6 = 0 OR '" + ast.Geographic.ToString() + "' IS NOT NULL) AND (D.EW7 = 0 OR '" + ast.Citizen_and_Society.ToString() + "' IS NOT NULL) " +
+                    "AND (D.EW8 = 0 OR '" + ast.Physics.ToString() + "' IS NOT NULL) AND (D.EW9 = 0 OR '" + ast.Chemistry.ToString() + "' IS NOT NULL) " +
+                    "AND (D.EW10 = 0 OR '" + ast.Biology.ToString() + "' IS NOT NULL) ORDER BY D.Salary DESC;";
             return command;
         }
 
