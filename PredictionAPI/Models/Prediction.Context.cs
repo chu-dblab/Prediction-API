@@ -25,7 +25,7 @@ namespace PredictionAPI.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CG> CGs { get; set; }
+        public virtual DbSet<CG> CG { get; set; }
         public virtual DbSet<D> D { get; set; }
         public virtual DbSet<DC> DCs { get; set; }
         public virtual DbSet<E103> E103 { get; set; }

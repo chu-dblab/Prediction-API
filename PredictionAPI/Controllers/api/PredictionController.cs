@@ -19,7 +19,7 @@ namespace PredictionAPI.Controllers.api
         {
             using(PredictionEntities predict = new PredictionEntities())
             {
-                var result = from groups in predict.CGs
+                var result = from groups in predict.CG
                              select groups.Gname;
                 var data = new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -35,9 +35,17 @@ namespace PredictionAPI.Controllers.api
         public HttpResponseMessage analysis([FromBody] JObject data)
         {
             Input obj = JsonConvert.DeserializeObject<Input>(data.ToString());
+            DataOperation op = new DataOperation();
+            List<Result> list = op.SearchResult(obj);
+            RootObject rootData = new RootObject();
+            rootData.status = Convert.ToInt32(HttpStatusCode.OK);
+            rootData.input = obj;
+            rootData.result = list;
+            rootData.msg = "Success~!!";
+            JObject jsonData = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(rootData));
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent("Data:"+obj.grades.ast.English)
+                Content = new ObjectContent<JObject>(jsonData,new JsonMediaTypeFormatter())
             };
             return result;
         }

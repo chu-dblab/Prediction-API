@@ -14,7 +14,7 @@ namespace PredictionAPI.Models
     
     public partial class CG
     {
-        public string Cname { get; set; }
         public string Gname { get; set; }
+        public string Cname { get; set; }
     }
 }

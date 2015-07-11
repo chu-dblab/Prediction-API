@@ -16,6 +16,6 @@ namespace PredictionAPI.Models
     {
         public string Ename { get; set; }
         public int Score { get; set; }
-        public double Percent { get; set; }
+        public double Percentage { get; set; }
     }
 }

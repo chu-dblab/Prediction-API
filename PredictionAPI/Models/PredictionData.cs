@@ -10,14 +10,14 @@ namespace PredictionAPI.Models
     {
         public int Chinese { get; set; }
         public int English { get; set; }
-        public int Math_A { get; set; }
-        public int Math_B { get; set; }
-        public int History { get; set; }
-        public int Geographic { get; set; }
-        public int Citizen_and_Society { get; set; }
-        public int Physics { get; set; }
-        public int Chemistry { get; set; }
-        public int Biology { get; set; }
+        public int? Math_A { get; set; }
+        public int? Math_B { get; set; }
+        public int? History { get; set; }
+        public int? Geographic { get; set; }
+        public int? Citizen_and_Society { get; set; }
+        public int? Physics { get; set; }
+        public int? Chemistry { get; set; }
+        public int? Biology { get; set; }
     }
 
     //學測

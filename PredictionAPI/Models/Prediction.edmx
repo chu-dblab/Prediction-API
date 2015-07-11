@@ -7,24 +7,24 @@
       <Schema Namespace="PredictionModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CG">
           <Key>
-            <PropertyRef Name="Cname" />
             <PropertyRef Name="Gname" />
+            <PropertyRef Name="Cname" />
           </Key>
-          <Property Name="Cname" Type="nchar" MaxLength="10" Nullable="false" />
           <Property Name="Gname" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Cname" Type="nchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="D">
           <Key>
             <PropertyRef Name="DID" />
           </Key>
           <Property Name="DID" Type="int" Nullable="false" />
-          <Property Name="UName" Type="nchar" MaxLength="20" Nullable="false" />
-          <Property Name="UURL" Type="nchar" MaxLength="85" Nullable="false" />
-          <Property Name="DName" Type="nchar" MaxLength="50" Nullable="false" />
-          <Property Name="DURL" Type="nchar" MaxLength="85" Nullable="false" />
+          <Property Name="UName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="UURL" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DURL" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Salary" Type="int" Nullable="false" />
-          <Property Name="SalaryURL" Type="nchar" MaxLength="85" Nullable="false" />
-          <Property Name="ELLevel" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="SalaryURL" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ELLevel" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MinScore" Type="float" Nullable="false" />
           <Property Name="TL1" Type="smallint" Nullable="false" />
           <Property Name="TL2" Type="smallint" Nullable="false" />
@@ -58,7 +58,7 @@
           </Key>
           <Property Name="Ename" Type="nchar" MaxLength="4" Nullable="false" />
           <Property Name="Score" Type="int" Nullable="false" />
-          <Property Name="Percent" Type="float" Nullable="false" />
+          <Property Name="Percentage" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="E104">
           <Key>
@@ -67,7 +67,7 @@
           </Key>
           <Property Name="Ename" Type="nchar" MaxLength="4" Nullable="false" />
           <Property Name="Score" Type="int" Nullable="false" />
-          <Property Name="Percent" Type="float" Nullable="false" />
+          <Property Name="Percentage" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="T">
           <Key>
@@ -80,7 +80,7 @@
           <Property Name="Grade4" Type="int" Nullable="false" />
           <Property Name="Grade5" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__DC__DID__21B6055D">
+        <Association Name="FK_DC_D">
           <End Role="D" Type="Self.D" Multiplicity="1" />
           <End Role="DC" Type="Self.DC" Multiplicity="*" />
           <ReferentialConstraint>
@@ -99,7 +99,7 @@
           <EntitySet Name="E103" EntityType="Self.E103" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="E104" EntityType="Self.E104" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T" EntityType="Self.T" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__DC__DID__21B6055D" Association="Self.FK__DC__DID__21B6055D">
+          <AssociationSet Name="FK_DC_D" Association="Self.FK_DC_D">
             <End Role="D" EntitySet="D" />
             <End Role="DC" EntitySet="DC" />
           </AssociationSet>
@@ -111,24 +111,24 @@
       <Schema Namespace="PredictionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="CG">
           <Key>
-            <PropertyRef Name="Cname" />
             <PropertyRef Name="Gname" />
+            <PropertyRef Name="Cname" />
           </Key>
-          <Property Name="Cname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="Gname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Cname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="D">
           <Key>
             <PropertyRef Name="DID" />
           </Key>
           <Property Name="DID" Type="Int32" Nullable="false" />
-          <Property Name="UName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="UURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="DName" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="DURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="UName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Salary" Type="Int32" Nullable="false" />
-          <Property Name="SalaryURL" Type="String" MaxLength="85" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="ELLevel" Type="String" MaxLength="1" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="SalaryURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ELLevel" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="MinScore" Type="Double" Nullable="false" />
           <Property Name="TL1" Type="Int16" Nullable="false" />
           <Property Name="TL2" Type="Int16" Nullable="false" />
@@ -146,7 +146,7 @@
           <Property Name="EW8" Type="Double" Nullable="false" />
           <Property Name="EW9" Type="Double" Nullable="false" />
           <Property Name="EW10" Type="Double" Nullable="false" />
-          <NavigationProperty Name="DCs" Relationship="Self.FK__DC__DID__21B6055D" FromRole="D" ToRole="DC" />
+          <NavigationProperty Name="DCs" Relationship="Self.FK_DC_D" FromRole="D" ToRole="DC" />
         </EntityType>
         <EntityType Name="DC">
           <Key>
@@ -155,7 +155,7 @@
           </Key>
           <Property Name="DID" Type="Int32" Nullable="false" />
           <Property Name="Cname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="D" Relationship="Self.FK__DC__DID__21B6055D" FromRole="DC" ToRole="D" />
+          <NavigationProperty Name="D" Relationship="Self.FK_DC_D" FromRole="DC" ToRole="D" />
         </EntityType>
         <EntityType Name="E103">
           <Key>
@@ -164,7 +164,7 @@
           </Key>
           <Property Name="Ename" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="Score" Type="Int32" Nullable="false" />
-          <Property Name="Percent" Type="Double" Nullable="false" />
+          <Property Name="Percentage" Type="Double" Nullable="false" />
         </EntityType>
         <EntityType Name="E104">
           <Key>
@@ -173,7 +173,7 @@
           </Key>
           <Property Name="Ename" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="Score" Type="Int32" Nullable="false" />
-          <Property Name="Percent" Type="Double" Nullable="false" />
+          <Property Name="Percentage" Type="Double" Nullable="false" />
         </EntityType>
         <EntityType Name="T">
           <Key>
@@ -186,7 +186,7 @@
           <Property Name="Grade4" Type="Int32" Nullable="false" />
           <Property Name="Grade5" Type="Int32" Nullable="false" />
         </EntityType>
-        <Association Name="FK__DC__DID__21B6055D">
+        <Association Name="FK_DC_D">
           <End Role="D" Type="Self.D" Multiplicity="1" />
           <End Role="DC" Type="Self.DC" Multiplicity="*" />
           <ReferentialConstraint>
@@ -199,13 +199,13 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="PredictionEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CGs" EntityType="Self.CG" />
+          <EntitySet Name="CG" EntityType="Self.CG" />
           <EntitySet Name="D" EntityType="Self.D" />
           <EntitySet Name="DCs" EntityType="Self.DC" />
           <EntitySet Name="E103" EntityType="Self.E103" />
           <EntitySet Name="E104" EntityType="Self.E104" />
           <EntitySet Name="T" EntityType="Self.T" />
-          <AssociationSet Name="FK__DC__DID__21B6055D" Association="Self.FK__DC__DID__21B6055D">
+          <AssociationSet Name="FK_DC_D" Association="Self.FK_DC_D">
             <End Role="D" EntitySet="D" />
             <End Role="DC" EntitySet="DCs" />
           </AssociationSet>
@@ -216,11 +216,11 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="PredictionModelStoreContainer" CdmEntityContainer="PredictionEntities">
-          <EntitySetMapping Name="CGs">
+          <EntitySetMapping Name="CG">
             <EntityTypeMapping TypeName="PredictionModel.CG">
               <MappingFragment StoreEntitySet="CG">
-                <ScalarProperty Name="Cname" ColumnName="Cname" />
                 <ScalarProperty Name="Gname" ColumnName="Gname" />
+                <ScalarProperty Name="Cname" ColumnName="Cname" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -268,7 +268,7 @@
               <MappingFragment StoreEntitySet="E103">
                 <ScalarProperty Name="Ename" ColumnName="Ename" />
                 <ScalarProperty Name="Score" ColumnName="Score" />
-                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="Percentage" ColumnName="Percentage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -277,7 +277,7 @@
               <MappingFragment StoreEntitySet="E104">
                 <ScalarProperty Name="Ename" ColumnName="Ename" />
                 <ScalarProperty Name="Score" ColumnName="Score" />
-                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="Percentage" ColumnName="Percentage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
