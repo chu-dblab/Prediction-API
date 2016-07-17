@@ -11,7 +11,8 @@ namespace PredictionAPI.Models
 {
     public class DataOperation
     {
-        private string conStr = "Data Source=CSIE;Initial Catalog=Prediction;Integrated Security=True";
+        //private string conStr = "Data Source=CSIE;Initial Catalog=Prediction_2015;Integrated Security=True";
+        private string conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
         private SqlConnection conn;
         private DataTable dt;
         public DataOperation()
@@ -30,8 +31,8 @@ namespace PredictionAPI.Models
         {
             string sqlCom = null;
             SqlDataAdapter buffer = null;
-            ArrayList score104 = new ArrayList();
-            int[] score103 = {ast.Chinese == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Chinese))),
+            ArrayList oldScore = new ArrayList();
+            int[] newScore = {ast.Chinese == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Chinese))),
                                  ast.English == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.English))),
                                  ast.Math_A == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Math_A))),
                                  ast.Math_B == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Math_B))),
@@ -43,21 +44,21 @@ namespace PredictionAPI.Models
                                  ast.Biology == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Biology)))
                              };
             string[] subject = {"國文","英文","數甲","數乙","歷史","地理","公社","物理","化學","生物"};
-            score104.Clear();
+            oldScore.Clear();
             this.conn.Open();
             for (int i = 0; i < 10; i++)
             {
-                sqlCom = "SELECT Min(E103.Score) As Score FROM E103,E104 WHERE E103.Ename = '" + subject[i] + "' " +
-                    "AND E104.Ename = '" + subject[i] + "' AND E104.Score = " + score103[i].ToString() + " AND E104.Percentage <= E103.Percentage;";
+                sqlCom = "SELECT Min(OldScoreData.Score) As Score FROM OldScoreData,NewScoreData WHERE OldScoreData.Ename = '" + subject[i] + "' " +
+                    "AND NewScoreData.Ename = '" + subject[i] + "' AND NewScoreData.Score = " + newScore[i].ToString() + " AND NewScoreData.Percentage <= OldScoreData.Percentage;";
                 buffer = new SqlDataAdapter(sqlCom,this.conn);
                 buffer.Fill(dt);
-                if (dt.Rows[0].IsNull("Score")) score104.Add(0);
-                else score104.Add(Convert.ToInt32(dt.Rows[0]["Score"]));
+                if (dt.Rows[0].IsNull("Score")) oldScore.Add(0);
+                else oldScore.Add(Convert.ToInt32(dt.Rows[0]["Score"]));
                 dt.Clear();
             }
             buffer.Dispose();
             this.conn.Close();
-            return score104;
+            return oldScore;
         }
 
         /// <summary>
