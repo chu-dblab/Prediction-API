@@ -11,7 +11,6 @@ namespace PredictionAPI.Models
 {
     public class DataOperation
     {
-        //private string conStr = "Data Source=CSIE;Initial Catalog=Prediction_2015;Integrated Security=True";
         private string conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
         private SqlConnection conn;
         private DataTable dt;
@@ -113,7 +112,6 @@ namespace PredictionAPI.Models
             if (this.conn.State == ConnectionState.Open)
             {
                 this.conn.Close();
-                //this.conn.State = ConnectionState.Closed;
             }
             this.conn.Open();
             try
@@ -206,5 +204,7 @@ namespace PredictionAPI.Models
             }
             return temp;
         }
+
+
     }
 }
