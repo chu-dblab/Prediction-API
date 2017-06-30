@@ -14,10 +14,12 @@ namespace PredictionAPI.Models
         private string conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
         private SqlConnection conn;
         private DataTable dt;
+        private QueryData query;
         public DataOperation()
         {
             this.conn = new SqlConnection(conStr);
             dt = new DataTable();
+            query = new QueryData();
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace PredictionAPI.Models
         /// <param name="ast">指考成績</param>
         /// <returns>104學年度的指考成績</returns>
         /// 
-        public ArrayList turnTo103Score(Ast ast)
+        public ArrayList turnToOldScore(Ast ast)
         {
             string sqlCom = null;
             SqlDataAdapter buffer = null;
@@ -47,8 +49,8 @@ namespace PredictionAPI.Models
             this.conn.Open();
             for (int i = 0; i < 10; i++)
             {
-                sqlCom = "SELECT Min(OldScoreData.Score) As Score FROM OldScoreData,NewScoreData WHERE OldScoreData.Ename = '" + subject[i] + "' " +
-                    "AND NewScoreData.Ename = '" + subject[i] + "' AND NewScoreData.Score = " + newScore[i].ToString() + " AND NewScoreData.Percentage <= OldScoreData.Percentage;";
+                sqlCom = "SELECT Max(OldScoreData.Score) As Score FROM OldScoreData,NewScoreData WHERE OldScoreData.Ename = '" + subject[i] + "' " +
+                    "AND NewScoreData.Ename = '" + subject[i] + "' AND NewScoreData.Score = " + newScore[i].ToString() + " AND NewScoreData.Percentage >= OldScoreData.Percentage;";
                 buffer = new SqlDataAdapter(sqlCom,this.conn);
                 buffer.Fill(dt);
                 if (dt.Rows[0].IsNull("Score")) oldScore.Add(0);
@@ -70,7 +72,7 @@ namespace PredictionAPI.Models
             string sqlCom = null;
             int LV = 0;
             int sum = gsat.Chinese + gsat.English + gsat.Math + gsat.Science + gsat.Society;
-            int[] score104OfGSAT = {gsat.Chinese, gsat.English, gsat.Math, gsat.Science, gsat.Society,sum };
+            int[] scoreOfGSAT = {gsat.Chinese, gsat.English, gsat.Math, gsat.Science, gsat.Society,sum };
             string[] subjectOfGSAT = { "國文", "英文", "數學", "自然", "社會" ,"總級分"};
             SqlDataAdapter buffer = null;
             ArrayList level = new ArrayList();
@@ -83,11 +85,11 @@ namespace PredictionAPI.Models
                 buffer.Fill(dt);
                 this.conn.Close();
 
-                if (score104OfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade1"].ToString())) LV = 0;
-                else if (score104OfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade2"].ToString())) LV = 1;
-                else if (score104OfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade3"].ToString())) LV = 2;
-                else if (score104OfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade4"].ToString())) LV = 3;
-                else if (score104OfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade5"].ToString())) LV = 4;
+                if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade1"].ToString())) LV = 0;
+                else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade2"].ToString())) LV = 1;
+                else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade3"].ToString())) LV = 2;
+                else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade4"].ToString())) LV = 3;
+                else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade5"].ToString())) LV = 4;
                 else LV = 5;
                 level.Add(LV);
                 dt.Clear();
@@ -102,27 +104,18 @@ namespace PredictionAPI.Models
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public List<Result> SearchResult(Input data)
+        public List<Result> SearchResult(Input data,bool isCHU)
         {
             List<Result> list = new List<Result>();
-            SqlDataAdapter buffer = null;
             string sqlCom = null;
-            ArrayList score103 = turnTo103Score(data.grades.ast);
+            ArrayList oldScore = turnToOldScore(data.grades.ast);
             ArrayList level = changeScoreOfGSAT2Level(data.grades.gsat);
-            if (this.conn.State == ConnectionState.Open)
-            {
-                this.conn.Close();
-            }
-            this.conn.Open();
             try
             {
-                sqlCom = appendSQLString(data.grades.ast, data.groups, score103, level,
-                data.grades.gsat.EngListeningLevel, data.expect_salary);
-
-                buffer = new SqlDataAdapter(sqlCom, this.conn);
-                buffer.Fill(dt);
-
-                for (int i = 0; i < dt.Rows.Count; i++)
+                sqlCom = appendSQLString(data.grades.ast, data.groups, oldScore, level,
+                data.grades.gsat.EngListeningLevel, data.expect_salary,data.location,data.property,isCHU);
+                dt = query.search(sqlCom);
+                for (int i = 0; i < dt.Rows.Count && dt.Rows.Count != 0; i++)
                 {
                     Result resultData = new Result();
                     //將搜尋到的東西封裝成Object
@@ -137,39 +130,42 @@ namespace PredictionAPI.Models
                     resultData.yourScore = Convert.ToDouble(dt.Rows[i]["YourScore"]);
                     list.Add(resultData);  //放到List中
                 }
-                dt.Clear();
-                this.conn.Close();
+                return list;
             }
             catch (SqlException ex)
             {
                 this.conn.Close();
+                return list;
             }
-            return list;
         }
 
-        private string appendSQLString(Ast ast,List<string> groups,ArrayList score103,ArrayList level, string EL,int expectedSalary)
+        private string appendSQLString(Ast ast,List<string> groups,ArrayList oldScore, 
+            ArrayList level, string EL,int expectedSalary, List<string> location, List<string> property, bool isCHU)
         {
             ArrayList data = changeToArray(ast);
             string group = appendData(groups);
+            string city = appendData(location);
+            string attribute = appendData(property);
+            string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
             string command = "SELECT DISTINCT D.DID,D.UName,D.UURL,D.DName,D.DURL, D.Salary, D.SalaryURL, D.MinScore, ("
-                    +score103[0].ToString()+"*D.EW1+"+score103[1].ToString()+"*D.EW2+"
-                    +score103[2].ToString()+"*D.EW3+"+score103[3].ToString()+"*D.EW4+"
-                    +score103[4].ToString()+"*D.EW5+"+score103[5].ToString()+"*D.EW6+"
-                    +score103[6].ToString()+"*D.EW7+"+score103[7].ToString()+"*D.EW8+"
-                    +score103[8].ToString()+"*D.EW9+"+score103[9].ToString()+"*D.EW10) As YourScore "+
-                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+
+                    + oldScore[0].ToString()+"*D.EW1+"+ oldScore[1].ToString()+"*D.EW2+"
+                    + oldScore[2].ToString()+"*D.EW3+"+ oldScore[3].ToString()+"*D.EW4+"
+                    + oldScore[4].ToString()+"*D.EW5+"+ oldScore[5].ToString()+"*D.EW6+"
+                    + oldScore[6].ToString()+"*D.EW7+"+ oldScore[7].ToString()+"*D.EW8+"
+                    + oldScore[8].ToString()+"*D.EW9+"+ oldScore[9].ToString()+"*D.EW10) As YourScore "+
+                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+ condition +
                     "AND D.ELLEVEL >= '" + EL + "' AND D.TL1 <= " + level[0].ToString() + " " +
                     "AND D.TL2 <= "+ level[1].ToString() +" AND D.TL3 <= "+level[2].ToString()+" "+
                     "AND D.TL4 <= "+level[3].ToString()+" AND D.TL5 <= "+level[4].ToString()+" "+
                     "AND D.TL6 <= "+level[5].ToString()+" "+
-                    "AND D.MinScore <= ("+score103[0].ToString()+"*D.EW1+"+score103[1].ToString()+"*D.EW2+"
-                    +score103[2].ToString()+"*D.EW3+"+score103[3].ToString()+"*D.EW4+"
-                    +score103[4].ToString()+"*D.EW5+"+score103[5].ToString()+"*D.EW6+"
-                    +score103[6].ToString()+"*D.EW7+"+score103[7].ToString()+"*D.EW8+"
-                    +score103[8].ToString()+"*D.EW9+"+score103[9].ToString()+"*D.EW10)*1.1 "+
+                    "AND D.MinScore <= ("+ oldScore[0].ToString()+"*D.EW1+"+ oldScore[1].ToString()+"*D.EW2+"
+                    + oldScore[2].ToString()+"*D.EW3+"+ oldScore[3].ToString()+"*D.EW4+"
+                    + oldScore[4].ToString()+"*D.EW5+"+ oldScore[5].ToString()+"*D.EW6+"
+                    + oldScore[6].ToString()+"*D.EW7+"+ oldScore[7].ToString()+"*D.EW8+"
+                    + oldScore[8].ToString()+"*D.EW9+"+ oldScore[9].ToString()+"*D.EW10)*1.1 "+
                     "AND D.Salary >= " + expectedSalary.ToString() + " AND (D.NEW1 = 0 OR " + data[0].ToString() + " IS NOT NULL) " +
-                    "AND (D.NEW2 =0 OR " + data[1].ToString() + " IS NOT NULL) AND (D.NEW3 = 0 OR " + data[2].ToString() + " IS NOT NULL) " +
-                    "AND (D.NEW4 =0 OR " + data[3].ToString() + " IS NOT NULL) AND (D.NEW5 = 0 OR " + data[4].ToString() + " IS NOT NULL) " +
+                    "AND (D.NEW2 = 0 OR " + data[1].ToString() + " IS NOT NULL) AND (D.NEW3 = 0 OR " + data[2].ToString() + " IS NOT NULL) " +
+                    "AND (D.NEW4 = 0 OR " + data[3].ToString() + " IS NOT NULL) AND (D.NEW5 = 0 OR " + data[4].ToString() + " IS NOT NULL) " +
                     "AND (D.NEW6 = 0 OR " + data[5].ToString() + " IS NOT NULL) AND (D.NEW7 = 0 OR " + data[6].ToString() + " IS NOT NULL) " +
                     "AND (D.NEW8 = 0 OR " + data[7].ToString() + " IS NOT NULL) AND (D.NEW9 = 0 OR " + data[8].ToString() + " IS NOT NULL) " +
                     "AND (D.NEW10 = 0 OR " + data[9].ToString() + " IS NOT NULL) ORDER BY D.Salary DESC;";

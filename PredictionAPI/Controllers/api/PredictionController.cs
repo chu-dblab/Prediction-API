@@ -22,11 +22,13 @@ namespace PredictionAPI.Controllers.api
             {
                 Input obj = JsonConvert.DeserializeObject<Input>(data.ToString());
                 DataOperation op = new DataOperation();
-                List<Result> list = op.SearchResult(obj);
+                List<Result> list = op.SearchResult(obj,false);
+                List<Result> listCHU = op.SearchResult(obj, true);
                 RootObject rootData = new RootObject();
                 rootData.status = Convert.ToInt32(HttpStatusCode.OK);
                 rootData.input = obj;
                 rootData.result = list;
+                rootData.resultCHU = listCHU;
                 rootData.message = "Success~!!";
                 JObject jsonData = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(rootData));
                 var result = new HttpResponseMessage(HttpStatusCode.OK)

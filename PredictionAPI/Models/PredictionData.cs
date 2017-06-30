@@ -10,8 +10,8 @@ namespace PredictionAPI.Models
     {
         public string Chinese { get; set; }
         public string English { get; set; }
-        public string Math_A { get; set; }
-        public string Math_B { get; set; }
+        public string Math_A { get; set; } //數學甲
+        public string Math_B { get; set; } //數學乙
         public string History { get; set; }
         public string Geographic { get; set; }
         public string Citizen_and_Society { get; set; }
@@ -34,28 +34,30 @@ namespace PredictionAPI.Models
     //成績
     public class Grades
     {
-        public Ast ast { get; set; }
-        public Gsat gsat { get; set; }
+        public Ast ast { get; set; } //指考
+        public Gsat gsat { get; set; } //學測
     }
 
     public class Input
     {
-        public Grades grades { get; set; }
-        public List<string> groups { get; set; }
-        public int expect_salary { get; set; }
+        public Grades grades { get; set; } //考試成績
+        public List<string> location { get; set; } //學校的所在縣市
+        public List<string> property { get; set; } //公私立
+        public List<string> groups { get; set; } //學群
+        public int expect_salary { get; set; } //期望薪資
     }
 
     public class Result
     {
-        public int did { get; set; }
-        public string uname { get; set; }
-        public string uurl { get; set; }
-        public string dname { get; set; }
-        public string durl { get; set; }
-        public double minScore { get; set; }
-        public int salary { get; set; }
-        public string salaryUrl { get; set; }
-        public double yourScore { get; set; }
+        public int did { get; set; } //校系代碼
+        public string uname { get; set; } //學校名稱
+        public string uurl { get; set; } //學校網址
+        public string dname { get; set; } //科系名稱
+        public string durl { get; set; } //科系網址
+        public double minScore { get; set; } //去年錄取最低分數
+        public int salary { get; set; } //104系友薪資
+        public string salaryUrl { get; set; }  //104系友薪資網址
+        public double yourScore { get; set; } //總分(加權過後)
     }
 
     public class RootObject
@@ -63,6 +65,7 @@ namespace PredictionAPI.Models
         public int status { get; set; }
         public Input input { get; set; }
         public List<Result> result { get; set; }
+        public List<Result> resultCHU { get; set; }
         public string message { get; set; }
     }
 }
