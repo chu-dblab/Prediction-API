@@ -14,24 +14,7 @@ using System.Web.Http.Cors;
 namespace PredictionAPI.Controllers.api
 {
     public class PredictionController : ApiController
-    {        
-        //[HttpGet]
-        //public HttpResponseMessage groups()
-        //{
-        //    using(PredictionEntities predict = new PredictionEntities())
-        //    {
-        //        var result = from groups in predict.CGs
-        //                     select groups.Gname;
-        //        var data = new HttpResponseMessage(HttpStatusCode.OK)
-        //        {
-        //            Content = new ObjectContent<JObject>(new JObject(new JProperty("status", HttpStatusCode.OK),
-        //                new JProperty("groups", result),
-        //                new JProperty("msg", "")), new JsonMediaTypeFormatter())
-        //        };
-        //        return data;
-        //    }
-        //}
-
+    {
         [HttpPost]
         public HttpResponseMessage analysis([FromBody] JObject data)
         {

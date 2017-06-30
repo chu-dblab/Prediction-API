@@ -162,8 +162,6 @@
     </Compile>
     <Compile Include="Models\PredictionData.cs" />
     <Compile Include="Models\DataOperation.cs" />
-    <Compile Include="Models\SalaryDate.cs" />
-    <Compile Include="Models\SalaryOperation.cs" />
     <Compile Include="Models\T.cs">
       <DependentUpon>Prediction.tt</DependentUpon>
     </Compile>
