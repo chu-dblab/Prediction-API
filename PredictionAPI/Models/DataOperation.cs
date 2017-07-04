@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
@@ -11,14 +10,11 @@ namespace PredictionAPI.Models
 {
     public class DataOperation
     {
-        private string conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
-        private SqlConnection conn;
         private DataTable dt;
         private QueryData query;
         public DataOperation()
         {
-            this.conn = new SqlConnection(conStr);
-            dt = new DataTable();
+            dt = null;
             query = new QueryData();
         }
 
@@ -31,9 +27,8 @@ namespace PredictionAPI.Models
         public ArrayList turnToOldScore(Ast ast)
         {
             string sqlCom = null;
-            SqlDataAdapter buffer = null;
             ArrayList oldScore = new ArrayList();
-            int[] newScore = {ast.Chinese == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Chinese))),
+            int[] newScore = {   ast.Chinese == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Chinese))),
                                  ast.English == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.English))),
                                  ast.Math_A == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Math_A))),
                                  ast.Math_B == null? 0 : Convert.ToInt32(Math.Floor(Convert.ToDouble(ast.Math_B))),
@@ -46,19 +41,15 @@ namespace PredictionAPI.Models
                              };
             string[] subject = {"國文","英文","數甲","數乙","歷史","地理","公社","物理","化學","生物"};
             oldScore.Clear();
-            this.conn.Open();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < newScore.Length; i++)
             {
                 sqlCom = "SELECT Max(OldScoreData.Score) As Score FROM OldScoreData,NewScoreData WHERE OldScoreData.Ename = '" + subject[i] + "' " +
                     "AND NewScoreData.Ename = '" + subject[i] + "' AND NewScoreData.Score = " + newScore[i].ToString() + " AND NewScoreData.Percentage >= OldScoreData.Percentage;";
-                buffer = new SqlDataAdapter(sqlCom,this.conn);
-                buffer.Fill(dt);
+                dt = query.search(sqlCom);
                 if (dt.Rows[0].IsNull("Score")) oldScore.Add(0);
                 else oldScore.Add(Convert.ToInt32(dt.Rows[0]["Score"]));
                 dt.Clear();
             }
-            buffer.Dispose();
-            this.conn.Close();
             return oldScore;
         }
 
@@ -74,17 +65,12 @@ namespace PredictionAPI.Models
             int sum = gsat.Chinese + gsat.English + gsat.Math + gsat.Science + gsat.Society;
             int[] scoreOfGSAT = {gsat.Chinese, gsat.English, gsat.Math, gsat.Science, gsat.Society,sum };
             string[] subjectOfGSAT = { "國文", "英文", "數學", "自然", "社會" ,"總級分"};
-            SqlDataAdapter buffer = null;
             ArrayList level = new ArrayList();
-            this.conn.Open();
             for (int i = 0; i < 6; i++)
             {
                 sqlCom = "SELECT Grade1,Grade2,Grade3,Grade4,Grade5 " +
                     "FROM T WHERE Tname = '" + subjectOfGSAT[i] + "'";
-                buffer = new SqlDataAdapter(sqlCom, this.conn);
-                buffer.Fill(dt);
-                this.conn.Close();
-
+                dt = query.search(sqlCom);
                 if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade1"].ToString())) LV = 0;
                 else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade2"].ToString())) LV = 1;
                 else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade3"].ToString())) LV = 2;
@@ -94,8 +80,6 @@ namespace PredictionAPI.Models
                 level.Add(LV);
                 dt.Clear();
             }
-            buffer.Dispose();
-            this.conn.Close();
             return level;
         }
 
@@ -134,7 +118,6 @@ namespace PredictionAPI.Models
             }
             catch (SqlException ex)
             {
-                this.conn.Close();
                 return list;
             }
         }
@@ -142,11 +125,11 @@ namespace PredictionAPI.Models
         private string appendSQLString(Ast ast,List<string> groups,ArrayList oldScore, 
             ArrayList level, string EL,int expectedSalary, List<string> location, List<string> property, bool isCHU)
         {
-            ArrayList data = changeToArray(ast);
+            string[] data = changeToArray(ast);
             string group = appendData(groups);
-            string city = appendData(location);
-            string attribute = appendData(property);
-            string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
+            //string city = appendData(location);
+            //string attribute = appendData(property);
+            //string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
             string command = "SELECT DISTINCT D.DID,D.UName,D.UURL,D.DName,D.DURL, D.Salary, D.SalaryURL, D.MinScore, ("
                     + oldScore[0].ToString()+"*D.EW1+"+ oldScore[1].ToString()+"*D.EW2+"
                     + oldScore[2].ToString()+"*D.EW3+"+ oldScore[3].ToString()+"*D.EW4+"
@@ -172,19 +155,21 @@ namespace PredictionAPI.Models
             return command;
         }
 
-        private ArrayList changeToArray(Ast ast)
+        private string[] changeToArray(Ast ast)
         {
-            string[] score = { ast.Chinese ,ast.English , ast.Math_A ,ast.Math_B ,
-                                 ast.History,ast.Geographic , ast.Citizen_and_Society,
-                                 ast.Physics,ast.Chemistry,ast.Biology };
-            ArrayList list = new ArrayList();
-
-            for(int i=0;i<score.Length;i++)
-            {
-                if (String.IsNullOrEmpty(score[i])) list.Add("null");
-                else list.Add(score[i]);
-            }
-            return list;
+            string[] score = {  ast.Chinese == null? null :ast.Chinese,
+                                ast.English == null?"null":ast.English,
+                                ast.Math_A == null?"null":ast.Math_A,
+                                ast.Math_B == null?"null":ast.Math_B,
+                                ast.History == null?"null":ast.History,
+                                ast.Geographic== null?"null":ast.Geographic,
+                                ast.Citizen_and_Society== null?"null":ast.Citizen_and_Society,
+                                ast.Physics== null?"null":ast.Physics,
+                                ast.Chemistry== null?"null":ast.Chemistry,
+                                ast.Biology== null?"null":ast.Biology
+                              };
+            
+            return score;
         }
 
         private string appendData(List<string> original)

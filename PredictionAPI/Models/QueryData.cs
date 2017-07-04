@@ -18,7 +18,7 @@ namespace PredictionAPI.Models
 
         public QueryData()
         {
-            conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
+            conStr = ConfigurationManager.ConnectionStrings["PredictionDBFile"].ConnectionString;
             conn = new SqlConnection(conStr);
             sqlcmd = new SqlCommand();
             buffer = null;
@@ -39,8 +39,7 @@ namespace PredictionAPI.Models
             catch(Exception ex)
             {
                 return dt;
-            }      
-            
+            }
         }
     }
 }

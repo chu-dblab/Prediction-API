@@ -12,11 +12,13 @@ namespace PredictionAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DC
+    public partial class Users
     {
-        public int DID { get; set; }
-        public string Cname { get; set; }
-    
-        public virtual D D { get; set; }
+        public string Email { get; set; }
+        public string location { get; set; }
+        public string schoolName { get; set; }
+        public string token { get; set; }
+        public string verificationCode { get; set; }
+        public string isPass { get; set; }
     }
 }

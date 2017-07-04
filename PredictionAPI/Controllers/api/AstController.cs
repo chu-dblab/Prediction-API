@@ -13,8 +13,10 @@ using System.Web.Http.Cors;
 
 namespace PredictionAPI.Controllers.api
 {
-    public class PredictionController : ApiController
+    public class AstController : ApiController
     {
+        
+        //TODO: 塞資料的動作可以給AutoMapper來做
         [HttpPost]
         public HttpResponseMessage analysis([FromBody] JObject data)
         {

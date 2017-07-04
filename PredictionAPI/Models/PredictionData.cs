@@ -68,4 +68,18 @@ namespace PredictionAPI.Models
         public List<Result> resultCHU { get; set; }
         public string message { get; set; }
     }
+
+   /****************************即時判定學測標準***************************/
+    public class Enter
+    {
+        public Grades grades { get; set; }
+    }
+
+    public class StandarLevel
+    {
+        public int status { get; set; }
+        public Enter enter { get; set; }
+        public Dictionary<string, string> step { get; set; }
+    }
+   /********************************************************************/
 }
