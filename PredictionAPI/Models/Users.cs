@@ -14,11 +14,20 @@ namespace PredictionAPI.Models
     
     public partial class Users
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Users()
+        {
+            this.UseHistories = new HashSet<UseHistory>();
+        }
+    
         public string Email { get; set; }
         public string location { get; set; }
         public string schoolName { get; set; }
-        public string token { get; set; }
         public string verificationCode { get; set; }
         public string isPass { get; set; }
+        public string identity { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UseHistory> UseHistories { get; set; }
     }
 }

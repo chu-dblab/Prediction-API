@@ -26,5 +26,6 @@ namespace PredictionAPI.Models
         }
     
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<UseHistory> UseHistories { get; set; }
     }
 }

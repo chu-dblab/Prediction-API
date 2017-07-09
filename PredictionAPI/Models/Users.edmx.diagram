@@ -6,6 +6,8 @@
     <edmx:Diagrams>
       <Diagram DiagramId="25c554dc5b834bf6989dfa8f0dc809c1" Name="Diagram1">
         <EntityTypeShape EntityType="PredictionModel.Users" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PredictionModel.UseHistory" Width="1.5" PointX="3" PointY="7" />
+        <AssociationConnector Association="PredictionModel.FK_UseHistory_ToUsers" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

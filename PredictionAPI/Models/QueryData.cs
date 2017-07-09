@@ -36,7 +36,7 @@ namespace PredictionAPI.Models
                 buffer.Fill(dt);
                 return dt;
             }
-            catch(Exception ex)
+            catch(InvalidOperationException ex)
             {
                 return dt;
             }

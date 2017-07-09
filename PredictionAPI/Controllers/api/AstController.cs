@@ -13,29 +13,32 @@ using System.Web.Http.Cors;
 
 namespace PredictionAPI.Controllers.api
 {
+    [Authorize]
     public class AstController : ApiController
     {
         
         //TODO: 塞資料的動作可以給AutoMapper來做
         [HttpPost]
-        public HttpResponseMessage analysis([FromBody] JObject data)
+        public HttpResponseMessage analysis([FromBody] Input obj)
         {
             try
             {
-                Input obj = JsonConvert.DeserializeObject<Input>(data.ToString());
+                //Input obj = JsonConvert.DeserializeObject<Input>(data.ToString());
                 DataOperation op = new DataOperation();
                 List<Result> list = op.SearchResult(obj,false);
                 List<Result> listCHU = op.SearchResult(obj, true);
-                RootObject rootData = new RootObject();
-                rootData.status = Convert.ToInt32(HttpStatusCode.OK);
-                rootData.input = obj;
-                rootData.result = list;
-                rootData.resultCHU = listCHU;
-                rootData.message = "Success~!!";
-                JObject jsonData = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(rootData));
+                RootObject rootData = new RootObject()
+                {
+                    status = Convert.ToInt32(HttpStatusCode.OK),
+                    input = obj,
+                    result = list,
+                    resultCHU = listCHU,
+                    message = "Success~!!"
+                };
+                //JObject jsonData = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(rootData));
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new ObjectContent<JObject>(jsonData, new JsonMediaTypeFormatter())
+                    Content = new ObjectContent<string>(JsonConvert.SerializeObject(rootData), new JsonMediaTypeFormatter())
                 };
                 return result;
             }
@@ -46,7 +49,7 @@ namespace PredictionAPI.Controllers.api
                     Content = new ObjectContent<JObject>(
                         new JObject(
                         new JProperty("status",HttpStatusCode.BadRequest),
-                        new JProperty("input",data),
+                        new JProperty("input",obj),
                         new JProperty("Message","解析錯誤~!!")), new JsonMediaTypeFormatter())
                 };
                 return result;

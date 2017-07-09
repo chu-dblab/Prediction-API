@@ -136,7 +136,7 @@ namespace PredictionAPI.Models
                     + oldScore[4].ToString()+"*D.EW5+"+ oldScore[5].ToString()+"*D.EW6+"
                     + oldScore[6].ToString()+"*D.EW7+"+ oldScore[7].ToString()+"*D.EW8+"
                     + oldScore[8].ToString()+"*D.EW9+"+ oldScore[9].ToString()+"*D.EW10) As YourScore "+
-                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+ condition +
+                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+ //condition +
                     "AND D.ELLEVEL >= '" + EL + "' AND D.TL1 <= " + level[0].ToString() + " " +
                     "AND D.TL2 <= "+ level[1].ToString() +" AND D.TL3 <= "+level[2].ToString()+" "+
                     "AND D.TL4 <= "+level[3].ToString()+" AND D.TL5 <= "+level[4].ToString()+" "+
