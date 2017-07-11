@@ -28,6 +28,10 @@
           <Property Name="Gsat_Science" Type="int" />
           <Property Name="Gsat_Society" Type="int" />
           <Property Name="Gsat_ELLevel" Type="varchar" MaxLength="2" />
+          <Property Name="Property" Type="nvarchar" MaxLength="50" />
+          <Property Name="expectSalary" Type="int" />
+          <Property Name="Departgroup" Type="nvarchar(max)" />
+          <Property Name="location" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -38,7 +42,7 @@
           <Property Name="schoolName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="verificationCode" Type="varchar(max)" />
           <Property Name="isPass" Type="char" MaxLength="1" />
-          <Property Name="identity" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="identities" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <Association Name="FK_UseHistory_ToUsers">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -64,32 +68,12 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PredictionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="Email" />
-          </Key>
-          <Property Name="Email" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="schoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="verificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="isPass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="identity" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="UseHistories" Relationship="PredictionModel.FK_UseHistory_ToUsers" FromRole="Users" ToRole="UseHistory" />
-        </EntityType>
-        <EntityContainer Name="Prediction_2016Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Users" EntityType="Self.Users" />
-          <EntitySet Name="UseHistories" EntityType="PredictionModel.UseHistory" />
-          <AssociationSet Name="FK_UseHistory_ToUsers" Association="PredictionModel.FK_UseHistory_ToUsers">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="UseHistory" EntitySet="UseHistories" />
-          </AssociationSet>
-        </EntityContainer>
         <EntityType Name="UseHistory">
           <Key>
             <PropertyRef Name="Email" />
             <PropertyRef Name="timestamp" />
           </Key>
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="timestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Ast_Chinese" Type="Double" />
           <Property Name="Ast_English" Type="Double" />
@@ -106,12 +90,28 @@
           <Property Name="Gsat_Math" Type="Int32" />
           <Property Name="Gsat_Science" Type="Int32" />
           <Property Name="Gsat_Society" Type="Int32" />
-          <NavigationProperty Name="User" Relationship="PredictionModel.FK_UseHistory_ToUsers" FromRole="UseHistory" ToRole="Users" />
           <Property Name="Gsat_ELLevel" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UseHistory_ToUsers" FromRole="UseHistory" ToRole="Users" />
+          <Property Name="Property" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="expectSalary" Type="Int32" />
+          <Property Name="Departgroup" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="location" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Email" />
+          </Key>
+          <Property Name="Email" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="schoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="verificationCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="isPass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="identities" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UseHistories" Relationship="Self.FK_UseHistory_ToUsers" FromRole="Users" ToRole="UseHistory" />
         </EntityType>
         <Association Name="FK_UseHistory_ToUsers">
-          <End Type="PredictionModel.Users" Role="Users" Multiplicity="1" />
-          <End Type="PredictionModel.UseHistory" Role="UseHistory" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UseHistory" Type="Self.UseHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="Email" />
@@ -121,45 +121,57 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="PredictionEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UseHistories" EntityType="Self.UseHistory" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_UseHistory_ToUsers" Association="Self.FK_UseHistory_ToUsers">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UseHistory" EntitySet="UseHistories" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="PredictionModelStoreContainer" CdmEntityContainer="Prediction_2016Entities">
+        <EntityContainerMapping StorageEntityContainer="PredictionModelStoreContainer" CdmEntityContainer="PredictionEntities">
+          <EntitySetMapping Name="UseHistories">
+            <EntityTypeMapping TypeName="PredictionModel.UseHistory">
+              <MappingFragment StoreEntitySet="UseHistory">
+                <ScalarProperty Name="location" ColumnName="location" />
+                <ScalarProperty Name="Departgroup" ColumnName="Departgroup" />
+                <ScalarProperty Name="expectSalary" ColumnName="expectSalary" />
+                <ScalarProperty Name="Property" ColumnName="Property" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="Ast_Chinese" ColumnName="Ast_Chinese" />
+                <ScalarProperty Name="Ast_English" ColumnName="Ast_English" />
+                <ScalarProperty Name="Ast_MathA" ColumnName="Ast_MathA" />
+                <ScalarProperty Name="Ast_MathB" ColumnName="Ast_MathB" />
+                <ScalarProperty Name="Ast_Physics" ColumnName="Ast_Physics" />
+                <ScalarProperty Name="Ast_Chemistry" ColumnName="Ast_Chemistry" />
+                <ScalarProperty Name="Ast_Biology" ColumnName="Ast_Biology" />
+                <ScalarProperty Name="Ast_History" ColumnName="Ast_History" />
+                <ScalarProperty Name="Ast_Geography" ColumnName="Ast_Geography" />
+                <ScalarProperty Name="Ast_CitizenAndSociety" ColumnName="Ast_CitizenAndSociety" />
+                <ScalarProperty Name="Gsat_Chinese" ColumnName="Gsat_Chinese" />
+                <ScalarProperty Name="Gsat_English" ColumnName="Gsat_English" />
+                <ScalarProperty Name="Gsat_Math" ColumnName="Gsat_Math" />
+                <ScalarProperty Name="Gsat_Science" ColumnName="Gsat_Science" />
+                <ScalarProperty Name="Gsat_Society" ColumnName="Gsat_Society" />
+                <ScalarProperty Name="Gsat_ELLevel" ColumnName="Gsat_ELLevel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="PredictionModel.Users">
+            <EntityTypeMapping TypeName="PredictionModel.User">
               <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="identity" ColumnName="identity" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="location" ColumnName="location" />
                 <ScalarProperty Name="schoolName" ColumnName="schoolName" />
                 <ScalarProperty Name="verificationCode" ColumnName="verificationCode" />
                 <ScalarProperty Name="isPass" ColumnName="isPass" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UseHistories">
-            <EntityTypeMapping TypeName="PredictionModel.UseHistory">
-              <MappingFragment StoreEntitySet="UseHistory">
-                <ScalarProperty Name="Gsat_ELLevel" ColumnName="Gsat_ELLevel" />
-                <ScalarProperty Name="Gsat_Society" ColumnName="Gsat_Society" />
-                <ScalarProperty Name="Gsat_Science" ColumnName="Gsat_Science" />
-                <ScalarProperty Name="Gsat_Math" ColumnName="Gsat_Math" />
-                <ScalarProperty Name="Gsat_English" ColumnName="Gsat_English" />
-                <ScalarProperty Name="Gsat_Chinese" ColumnName="Gsat_Chinese" />
-                <ScalarProperty Name="Ast_CitizenAndSociety" ColumnName="Ast_CitizenAndSociety" />
-                <ScalarProperty Name="Ast_Geography" ColumnName="Ast_Geography" />
-                <ScalarProperty Name="Ast_History" ColumnName="Ast_History" />
-                <ScalarProperty Name="Ast_Biology" ColumnName="Ast_Biology" />
-                <ScalarProperty Name="Ast_Chemistry" ColumnName="Ast_Chemistry" />
-                <ScalarProperty Name="Ast_Physics" ColumnName="Ast_Physics" />
-                <ScalarProperty Name="Ast_MathB" ColumnName="Ast_MathB" />
-                <ScalarProperty Name="Ast_MathA" ColumnName="Ast_MathA" />
-                <ScalarProperty Name="Ast_English" ColumnName="Ast_English" />
-                <ScalarProperty Name="Ast_Chinese" ColumnName="Ast_Chinese" />
-                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="identities" ColumnName="identities" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -177,7 +189,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="無" />

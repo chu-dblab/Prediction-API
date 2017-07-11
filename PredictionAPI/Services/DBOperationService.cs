@@ -4,24 +4,25 @@ using System.Linq;
 using System.Web;
 using PredictionAPI.Models;
 using PredictionAPI.Exception;
+using System.Web.Http.ModelBinding;
 
 namespace PredictionAPI.Services
 {
     public class DBOperationService
     {
-        private Prediction_2016Entities db;
+        private PredictionEntities db;
 
         public DBOperationService()
         {
-            db = new Prediction_2016Entities();
+            db = new PredictionEntities();
         }
-        public void CreateUser(Users user)
+        public void CreateUser(User user)
         {
             db.Users.Add(user);
             db.SaveChanges();
         }
 
-        public Users FindUser(string property)
+        public User FindUser(string property)
         {
             var data = db.Users.Find(property);
             if (data != null)
@@ -36,9 +37,9 @@ namespace PredictionAPI.Services
 
         public void UpdateUserInfo(string property,string code,string pass)
         {
-            Users data = db.Users.Find(property);
+            User data = db.Users.Find(code);
             data.isPass = pass;
-            data.verificationCode = code;
+            data.verificationCode = string.Empty;
             db.SaveChanges();
         }
 

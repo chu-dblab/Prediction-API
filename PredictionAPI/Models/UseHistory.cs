@@ -32,7 +32,11 @@ namespace PredictionAPI.Models
         public Nullable<int> Gsat_Science { get; set; }
         public Nullable<int> Gsat_Society { get; set; }
         public string Gsat_ELLevel { get; set; }
+        public string Property { get; set; }
+        public Nullable<int> expectSalary { get; set; }
+        public string Departgroup { get; set; }
+        public string location { get; set; }
     
-        public virtual Users User { get; set; }
+        public virtual User User { get; set; }
     }
 }

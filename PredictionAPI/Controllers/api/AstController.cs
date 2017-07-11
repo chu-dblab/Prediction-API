@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PredictionAPI.Models;
 using System.Web.Http.Cors;
+using PredictionAPI.Services;
 
 namespace PredictionAPI.Controllers.api
 {
@@ -23,7 +24,6 @@ namespace PredictionAPI.Controllers.api
         {
             try
             {
-                //Input obj = JsonConvert.DeserializeObject<Input>(data.ToString());
                 DataOperation op = new DataOperation();
                 List<Result> list = op.SearchResult(obj,false);
                 List<Result> listCHU = op.SearchResult(obj, true);
@@ -35,10 +35,9 @@ namespace PredictionAPI.Controllers.api
                     resultCHU = listCHU,
                     message = "Success~!!"
                 };
-                //JObject jsonData = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(rootData));
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new ObjectContent<string>(JsonConvert.SerializeObject(rootData), new JsonMediaTypeFormatter())
+                    Content = new ObjectContent<RootObject>(rootData, new JsonMediaTypeFormatter())
                 };
                 return result;
             }

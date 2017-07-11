@@ -13,10 +13,10 @@ namespace PredictionAPI.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class Prediction_2016Entities : DbContext
+    public partial class PredictionEntities : DbContext
     {
-        public Prediction_2016Entities()
-            : base("name=Prediction_2016Entities")
+        public PredictionEntities()
+            : base("name=PredictionEntities")
         {
         }
     
@@ -25,7 +25,7 @@ namespace PredictionAPI.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<UseHistory> UseHistories { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

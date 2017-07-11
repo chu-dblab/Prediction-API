@@ -13,11 +13,13 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Collections.Specialized;
 
 namespace PredictionAPI.Controllers.api
 {
     public class AccountController : ApiController
     {
+        private const string msg = "您的信箱讓未通過驗證，請到信箱收信";
         private DBOperationService db;
         private EmailService email;
 
@@ -26,28 +28,30 @@ namespace PredictionAPI.Controllers.api
         {
             db = new DBOperationService();
             db.UpdateUserInfo(address, authcode, "Y");
-            return Redirect("/2017/predict.html");
+            return Redirect(@"http://predict.chu.edu.tw/2017/ast/login.html");
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> SignUp([FromBody] UserData userData)
+        public HttpResponseMessage SignUp([FromBody] UserData userData)
         {
             //在DB中新增一位使用者
             db = new DBOperationService();
-            Users data = new Users()
+            User data = new User()
             {
                 Email = userData.email,
                 location = userData.location,
                 schoolName = userData.schoolName,
-                identity = userData.identity,
-                verificationCode = Guid.NewGuid().ToString(),
+                identities = userData.identity,
+                verificationCode = Guid.NewGuid().ToString().Trim('-'),
                 isPass = "N"
             };
             //發信給使用者作信箱驗證
             email = new EmailService();
-            await email.SendAsync(data.Email, data.verificationCode, Request.RequestUri.ToString());
-
-            db.CreateUser(data);
+            email.SendMail(data.Email, data.verificationCode, Request.RequestUri.ToString());
+            if(ModelState.IsValid)
+            {
+                db.CreateUser(data);
+            }
             //送出註冊成功的JSON 字串
             TopObject<UserData> result = new TopObject<UserData>()
             {
@@ -58,50 +62,68 @@ namespace PredictionAPI.Controllers.api
             var reData = new HttpResponseMessage()
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new ObjectContent<string>(JsonConvert.SerializeObject(result),
-                          new JsonMediaTypeFormatter())
+                Content = new ObjectContent<TopObject<UserData>>(result,new JsonMediaTypeFormatter())
             };
             return reData;
         }
 
         [HttpPost]
-        public HttpResponseMessage Login([FromBody]string userEMail)
+        public HttpResponseMessage Login([FromBody]string email)
         {
             db = new DBOperationService();
             try
             {
-                var data = db.FindUser(userEMail);
-                var cookie = new CookieHeaderValue("ticket", JsonConvert.SerializeObject(data))
+                var data = db.FindUser(email);
+                HttpResponseMessage result = null;
+                if (data.isPass != "N")
                 {
-                    Domain = Request.RequestUri.ToString(),
-                    Expires = DateTimeOffset.Now.AddMinutes(60),
-                    Path = "/",
-                    HttpOnly = true
-                };
-                //傳cookie+登入成功訊息
-                var result = new HttpResponseMessage()
+                    var saveData = new NameValueCollection();
+                    saveData["email"] = data.Email;
+                    var cookie = new CookieHeaderValue("session", saveData)
+                    {
+                        Domain = Request.RequestUri.ToString(),
+                        Expires = DateTimeOffset.Now.AddMinutes(60),
+                        Path = "/",
+                        HttpOnly = true,
+                    };
+                    //傳cookie+登入成功訊息
+                    result = new HttpResponseMessage()
+                    {
+                        Content = new ObjectContent<User>(data, new JsonMediaTypeFormatter()),
+                        StatusCode = HttpStatusCode.OK                        
+                    };
+                    result.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+                    return result;
+                }
+                else
                 {
-                    Content = new ObjectContent<string>(JsonConvert.SerializeObject(data), new JsonMediaTypeFormatter())
-                };
-                result.Headers.AddCookies(new CookieHeaderValue[] { cookie});
-                return result;
-                
+                    TopObject<string> mesg = new TopObject<string>()
+                    {
+                        input = email,
+                        status = Convert.ToInt32(HttpStatusCode.Unauthorized),
+                        Messege = msg
+                    };
+                    result = new HttpResponseMessage()
+                    {
+                        Content = new ObjectContent<TopObject<string>>(mesg, new JsonMediaTypeFormatter()),
+                        StatusCode = HttpStatusCode.Unauthorized,
+                    };
+                    return result;
+                }
             }
             catch(UserNotFoundException ex)
             {
                 TopObject<string> obj = new TopObject<string>()
                 {
                     status = Convert.ToInt32(HttpStatusCode.NotFound),
-                    input = userEMail,
+                    input = email,
                     Messege = "沒有這位使用者或Email輸入錯誤"
                 };
                 //送註冊JSON訊息
-
                 var errorData = new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.NotFound,
-                    Content = new ObjectContent<string>(JsonConvert.SerializeObject(obj),
-                          new JsonMediaTypeFormatter())
+                    Content = new ObjectContent<TopObject<string>>(obj,new JsonMediaTypeFormatter())
                 };
                 return errorData;
             }

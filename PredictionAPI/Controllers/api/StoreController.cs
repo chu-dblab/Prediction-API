@@ -13,37 +13,20 @@ using System.Web.Http;
 
 namespace PredictionAPI.Controllers.api
 {
+    [Authorize]
     public class StoreController : ApiController
     {
         private DBOperationService db;
+
         [HttpPost]
-        public HttpResponseMessage History([FromBody] Grades data)
+        public HttpResponseMessage History([FromBody] Input data)
         {
-            CookieHeaderValue cookie = Request.Headers.GetCookies("ticket").FirstOrDefault();
-            UserData da = JsonConvert.DeserializeObject<UserData>(cookie["ticket"].Value);
-            UseHistory history = new UseHistory()
-            {
-                Email = da.email,
-                timestamp = DateTime.Now,
-                Ast_Chinese = Convert.ToDouble(data.ast.Chinese),
-                Ast_English = Convert.ToDouble(data.ast.English),
-                Ast_MathA = Convert.ToDouble(data.ast.Math_A),
-                Ast_MathB = Convert.ToDouble(data.ast.Math_B),
-                Ast_Physics = Convert.ToDouble(data.ast.Physics),
-                Ast_Chemistry = Convert.ToDouble(data.ast.Chemistry),
-                Ast_Biology = Convert.ToDouble(data.ast.Biology),
-                Ast_History = Convert.ToDouble(data.ast.History),
-                Ast_Geography = Convert.ToDouble(data.ast.Geographic),
-                Ast_CitizenAndSociety = Convert.ToDouble(data.ast.Citizen_and_Society),
-                Gsat_Chinese = data.gsat.Chinese,
-                Gsat_English = data.gsat.English,
-                Gsat_Math = data.gsat.Math,
-                Gsat_Science = data.gsat.Science,
-                Gsat_Society = data.gsat.Society,
-                Gsat_ELLevel = data.gsat.EngListeningLevel
-            };
+            db = new DBOperationService();
+            ChangeDataType change = new ChangeDataType();
+            CookieHeaderValue cookie = Request.Headers.GetCookies("session").FirstOrDefault();
+            UseHistory history = change.Mapper(data, cookie["session"].Values["email"], DateTime.Now);
             db.StoreHistory(history);
-            TopObject<Grades> result = new TopObject<Grades>()
+            TopObject<Input> result = new TopObject<Input>()
             {
                 status = Convert.ToInt32(HttpStatusCode.OK),
                 input = data,
@@ -51,8 +34,7 @@ namespace PredictionAPI.Controllers.api
             };
             var resp = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new ObjectContent<string>(JsonConvert.SerializeObject(result), 
-                          new JsonMediaTypeFormatter())
+                Content = new ObjectContent<TopObject<Input>>(result, new JsonMediaTypeFormatter())
             };
             return resp;
         }
