@@ -14,7 +14,6 @@ using PredictionAPI.Services;
 
 namespace PredictionAPI.Controllers.api
 {
-    [Authorize]
     public class AstController : ApiController
     {
         

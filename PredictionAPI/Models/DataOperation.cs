@@ -127,9 +127,9 @@ namespace PredictionAPI.Models
         {
             string[] data = changeToArray(ast);
             string group = appendData(groups);
-            //string city = appendData(location);
-            //string attribute = appendData(property);
-            //string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
+            string city = appendData(location);
+            string attribute = appendData(property);
+            string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
             string command = "SELECT DISTINCT D.DID,D.UName,D.UURL,D.DName,D.DURL, D.Salary, D.SalaryURL, D.MinScore, ("
                     + oldScore[0].ToString()+"*D.EW1+"+ oldScore[1].ToString()+"*D.EW2+"
                     + oldScore[2].ToString()+"*D.EW3+"+ oldScore[3].ToString()+"*D.EW4+"
@@ -157,7 +157,7 @@ namespace PredictionAPI.Models
 
         private string[] changeToArray(Ast ast)
         {
-            string[] score = {  ast.Chinese == null? null :ast.Chinese,
+            string[] score = {  ast.Chinese == null? "null" :ast.Chinese,
                                 ast.English == null?"null":ast.English,
                                 ast.Math_A == null?"null":ast.Math_A,
                                 ast.Math_B == null?"null":ast.Math_B,

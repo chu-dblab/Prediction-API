@@ -13,7 +13,6 @@ using System.Web.Http;
 
 namespace PredictionAPI.Controllers.api
 {
-    [Authorize]
     public class StoreController : ApiController
     {
         private DBOperationService db;

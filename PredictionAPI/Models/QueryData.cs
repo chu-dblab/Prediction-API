@@ -18,7 +18,7 @@ namespace PredictionAPI.Models
 
         public QueryData()
         {
-            conStr = ConfigurationManager.ConnectionStrings["PredictionDBFile"].ConnectionString;
+            conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
             conn = new SqlConnection(conStr);
             sqlcmd = new SqlCommand();
             buffer = null;

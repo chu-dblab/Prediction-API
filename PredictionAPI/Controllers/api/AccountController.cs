@@ -22,13 +22,15 @@ namespace PredictionAPI.Controllers.api
         private const string msg = "您的信箱讓未通過驗證，請到信箱收信";
         private DBOperationService db;
         private EmailService email;
+        private const string redirectURL = @"http://predict.chu.edu.tw/2017/ast/login.html";
+        private const string redirectURLForTest = @"http://140.126.11.158/2017/ast/login.html";
 
         [HttpGet]
         public IHttpActionResult EmailVerify(string address,string authcode)
         {
             db = new DBOperationService();
             db.UpdateUserInfo(address, authcode, "Y");
-            return Redirect(@"http://predict.chu.edu.tw/2017/ast/login.html");
+            return Redirect(redirectURLForTest);
         }
 
         [HttpPost]
@@ -81,16 +83,22 @@ namespace PredictionAPI.Controllers.api
                     saveData["email"] = data.Email;
                     var cookie = new CookieHeaderValue("session", saveData)
                     {
-                        Domain = Request.RequestUri.ToString(),
-                        Expires = DateTimeOffset.Now.AddMinutes(60),
+                        Domain = Request.RequestUri.Host,
                         Path = "/",
+                        Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
+                    };
+                    TopObject<string> returnData = new TopObject<string>()
+                    {
+                        status = Convert.ToInt32(HttpStatusCode.OK),
+                        input = email,
+                        Messege = "登入成功"
                     };
                     //傳cookie+登入成功訊息
                     result = new HttpResponseMessage()
                     {
-                        Content = new ObjectContent<User>(data, new JsonMediaTypeFormatter()),
-                        StatusCode = HttpStatusCode.OK                        
+                        Content = new ObjectContent<TopObject<string>>(returnData, new JsonMediaTypeFormatter()),
+                        StatusCode = HttpStatusCode.OK                      
                     };
                     result.Headers.AddCookies(new CookieHeaderValue[] { cookie });
                     return result;

@@ -58,6 +58,7 @@ namespace PredictionAPI.Models
         public int salary { get; set; } //104系友薪資
         public string salaryUrl { get; set; }  //104系友薪資網址
         public double yourScore { get; set; } //總分(加權過後)
+        public string examURL { get; set; }
     }
 
     public class RootObject

@@ -37,22 +37,16 @@ namespace PredictionAPI.Services
                 Host = "smtp.gmail.com",
                 EnableSsl = true
             };
-            // await smtp.SendMailAsync(mail);
-            try
-            {
-                smtp.Send(mail);
-            }
-            catch(SmtpException error)
-            {
-
-            }
+            smtp.Send(mail);
         }
 
         private string GetEmailContent(string mail, string code, string url)
         {
+            //const string verifyURL = @"http://predict.chu.edu.tw/2017/ast/api/Account/EmailVerify?address=";
+            const string verifyURLForTest = @"http://140.126.11.158/api/Account/EmailVerify?address=";
             string content = File.ReadAllText(HttpContext.Current.Server.MapPath("~/EmailContentTemplate.html"));
-            //string verifyUrl = url.Replace("SignUp", "EmailVerify?address=" + mail + "&authcode=" + code);
-            content = content.Replace("{{vertifyURL}}", @"http://140.126.11.158/api/Account/EmailVerify?address=" + mail + "&authcode=" + code);
+            //content = content.Replace("{{vertifyURL}}", verifyURL + mail + "&authcode=" + code);
+            content = content.Replace("{{vertifyURL}}", verifyURLForTest + mail + "&authcode=" + code);
             return content;
         }
     }
