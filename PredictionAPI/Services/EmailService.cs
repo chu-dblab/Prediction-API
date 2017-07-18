@@ -46,11 +46,11 @@ namespace PredictionAPI.Services
 
         private string GetEmailContent(string mail, string code, string url)
         {
-            //const string verifyURL = @"http://predict.chu.edu.tw/2017/ast/api/Account/EmailVerify?address=";
-            const string verifyURLForTest = @"http://140.126.11.158/2017/ast/api/Account/EmailVerify?address=";
+            const string verifyURL = @"http://predict.chu.edu.tw/2017/ast/api/Account/EmailVerify?address=";
+            //const string verifyURLForTest = @"http://140.126.11.158/2017/ast/api/Account/EmailVerify?address=";
             string content = File.ReadAllText(HttpContext.Current.Server.MapPath("~/EmailContentTemplate.html"));
             //content = content.Replace("{{vertifyURL}}", verifyURL + mail + "&authcode=" + code);
-            content = content.Replace("{{vertifyURL}}", verifyURLForTest + mail + "&authcode=" + code);
+            content = content.Replace("{{vertifyURL}}", verifyURL + mail + "&authcode=" + code);
             return content;
         }
     }

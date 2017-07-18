@@ -32,11 +32,18 @@
     <WarningLevel>4</WarningLevel>
     <PublishDatabaseSettings>
       <Objects>
-        <ObjectGroup Name="PredictionEntities 部署" Order="1">
+        <ObjectGroup Name="PredictionEntities 部署" Order="1" Enabled="False">
           <Destination Path="" />
           <Object Type="DbFullSql">
             <PreSource Path="Data Source=CSIE%3bInitial Catalog=Prediction%3bIntegrated Security=True%3bApplication Name=EntityFramework%3bContext Connection=False" ScriptSchema="True" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" />
             <Source Path="obj\Debug\AutoScripts\PredictionEntities 部署_SchemaAndData.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
+        <ObjectGroup Name="PredictionADO 部署" Order="2" xmlns="">
+          <Destination Path="" />
+          <Object Type="DbFullSql">
+            <PreSource Path="Data Source=localhost%3bInitial Catalog=Prediction_2017%3bIntegrated Security=True" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\PredictionADO 部署_SchemaOnly.sql" Transacted="True" />
           </Object>
         </ObjectGroup>
       </Objects>
@@ -54,16 +61,24 @@
     <WarningLevel>4</WarningLevel>
     <PublishDatabaseSettings>
       <Objects>
-        <ObjectGroup Name="PredictionEntities 部署" Order="1">
+        <ObjectGroup Name="PredictionEntities 部署" Order="1" Enabled="True">
           <Destination Path="Data Source=CSIE%3bInitial Catalog=Prediction%3bIntegrated Security=True%3bMultipleActiveResultSets=True%3bApplication Name=EntityFramework%3bContext Connection=False" />
           <Object Type="DbFullSql" Enabled="True">
             <PreSource Path="Data Source=CSIE%3bInitial Catalog=Prediction%3bIntegrated Security=True%3bApplication Name=EntityFramework%3bContext Connection=False" ScriptSchema="True" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" />
             <Source Path="obj\Release\AutoScripts\PredictionEntities 部署_SchemaAndData.sql" Transacted="True" />
           </Object>
         </ObjectGroup>
+        <ObjectGroup Name="PredictionADO 部署" Order="2" Enabled="True" xmlns="">
+          <Destination Path="" />
+          <Object Type="DbFullSql">
+            <PreSource Path="Data Source=localhost%3bInitial Catalog=Prediction_2017%3bIntegrated Security=True" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Release\AutoScripts\PredictionADO 部署_SchemaOnly.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
       </Objects>
     </PublishDatabaseSettings>
     <IncludeIisSettings>false</IncludeIisSettings>
+    <PublishDatabases>true</PublishDatabases>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -225,6 +240,7 @@
     </Content>
     <Content Include="Views\web.config" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

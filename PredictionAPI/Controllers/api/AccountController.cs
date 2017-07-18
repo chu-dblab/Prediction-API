@@ -23,20 +23,18 @@ namespace PredictionAPI.Controllers.api
         private DBOperationService db;
         private EmailService email;
         private const string redirectURL = @"http://predict.chu.edu.tw/2017/ast/login.html";
-        private const string redirectURLForTest = @"http://localhost:53364/2017/ast/predict.html";
+        private const string redirectURLForTest = @"http://140.126.11.158/2017/ast/predict.html";
 
         [HttpGet]
         public IHttpActionResult EmailVerify(string address, string authcode)
         {
             db = new DBOperationService();
             db.UpdateUserInfo(address, authcode, "Y");
-            return Redirect(redirectURLForTest);
-            //MediaTypeFormatter tmp = new MediaTypeFormatter();
-            //return Content(HttpStatusCode.OK, "<script></script>",);
+            return Redirect(redirectURL);
         }
 
         [HttpPost]
-        public HttpResponseMessage resendEmail(string address)
+        public HttpResponseMessage ResendEmail([FromBody]string address)
         {
             db = new DBOperationService();
             email = new EmailService();
