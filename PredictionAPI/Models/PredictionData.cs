@@ -29,6 +29,7 @@ namespace PredictionAPI.Models
         public int Science { get; set; }
         public int Society { get; set; }
         public string EngListeningLevel { get; set; }
+        public int TotalScore { get; set; }
     }
 
     //成績
@@ -49,7 +50,7 @@ namespace PredictionAPI.Models
 
     public class Result
     {
-        public int did { get; set; } //校系代碼
+        public string did { get; set; } //校系代碼
         public string uname { get; set; } //學校名稱
         public string uurl { get; set; } //學校網址
         public string dname { get; set; } //科系名稱
@@ -58,7 +59,7 @@ namespace PredictionAPI.Models
         public int salary { get; set; } //104系友薪資
         public string salaryUrl { get; set; }  //104系友薪資網址
         public double yourScore { get; set; } //總分(加權過後)
-        public string examURL { get; set; }
+        public string examURL { get; set; } //指考校系分則網址
     }
 
     public class RootObject

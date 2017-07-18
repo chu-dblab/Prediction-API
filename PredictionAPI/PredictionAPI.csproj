@@ -176,8 +176,10 @@
     <Compile Include="Controllers\api\AccountController.cs" />
     <Compile Include="Controllers\api\AstController.cs" />
     <Compile Include="Controllers\api\StoreController.cs" />
+    <Compile Include="Exception\EmailAddrressNotExistException.cs" />
     <Compile Include="Exception\EmailNotVertifyException.cs" />
     <Compile Include="Exception\UserNotFoundException.cs" />
+    <Compile Include="Exception\VerifiedException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -221,8 +223,8 @@
     <Content Include="Models\Prediction.edmx.diagram">
       <DependentUpon>Prediction.edmx</DependentUpon>
     </Content>
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\web.config" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -44,8 +44,10 @@
           <Property Name="isPass" Type="char" MaxLength="1" />
           <Property Name="identities" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
-        <Association Name="FK_UseHistory_ToUsers">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+        <Association Name="FK_UseHistory_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="UseHistory" Type="Self.UseHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
@@ -59,7 +61,7 @@
         <EntityContainer Name="PredictionModelStoreContainer">
           <EntitySet Name="UseHistory" EntityType="Self.UseHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_UseHistory_ToUsers" Association="Self.FK_UseHistory_ToUsers">
+          <AssociationSet Name="FK_UseHistory_Users" Association="Self.FK_UseHistory_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="UseHistory" EntitySet="UseHistory" />
           </AssociationSet>

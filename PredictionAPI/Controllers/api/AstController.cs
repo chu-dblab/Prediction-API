@@ -48,7 +48,7 @@ namespace PredictionAPI.Controllers.api
                         new JObject(
                         new JProperty("status",HttpStatusCode.BadRequest),
                         new JProperty("input",obj),
-                        new JProperty("Message","解析錯誤~!!")), new JsonMediaTypeFormatter())
+                        new JProperty("message","解析錯誤~!!")), new JsonMediaTypeFormatter())
                 };
                 return result;
             }

@@ -29,7 +29,7 @@ namespace PredictionAPI.Controllers.api
             {
                 status = Convert.ToInt32(HttpStatusCode.OK),
                 input = data,
-                Messege = "記錄成功~!!"
+                message = "記錄成功~!!"
             };
             var resp = new HttpResponseMessage(HttpStatusCode.OK)
             {

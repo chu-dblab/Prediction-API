@@ -62,8 +62,8 @@ namespace PredictionAPI.Models
         {
             string sqlCom = null;
             int LV = 0;
-            int sum = gsat.Chinese + gsat.English + gsat.Math + gsat.Science + gsat.Society;
-            int[] scoreOfGSAT = {gsat.Chinese, gsat.English, gsat.Math, gsat.Science, gsat.Society,sum };
+            //int sum = gsat.Chinese + gsat.English + gsat.Math + gsat.Science + gsat.Society;
+            int[] scoreOfGSAT = {gsat.Chinese, gsat.English, gsat.Math, gsat.Science, gsat.Society,gsat.TotalScore };
             string[] subjectOfGSAT = { "國文", "英文", "數學", "自然", "社會" ,"總級分"};
             ArrayList level = new ArrayList();
             for (int i = 0; i < 6; i++)
@@ -103,7 +103,8 @@ namespace PredictionAPI.Models
                 {
                     Result resultData = new Result();
                     //將搜尋到的東西封裝成Object
-                    resultData.did = Convert.ToInt32(dt.Rows[i]["DID"].ToString());
+                    resultData.did = dt.Rows[i]["DID"].ToString();
+                    resultData.examURL = dt.Rows[i]["ExamURL"].ToString();
                     resultData.uname = dt.Rows[i]["UName"].ToString().Trim();
                     resultData.uurl = dt.Rows[i]["UURL"].ToString().Trim();
                     resultData.dname = dt.Rows[i]["DName"].ToString().Trim();
@@ -114,6 +115,7 @@ namespace PredictionAPI.Models
                     resultData.yourScore = Convert.ToDouble(dt.Rows[i]["YourScore"]);
                     list.Add(resultData);  //放到List中
                 }
+                dt.Clear();
                 return list;
             }
             catch (SqlException ex)
@@ -125,18 +127,18 @@ namespace PredictionAPI.Models
         private string appendSQLString(Ast ast,List<string> groups,ArrayList oldScore, 
             ArrayList level, string EL,int expectedSalary, List<string> location, List<string> property, bool isCHU)
         {
-            string[] data = changeToArray(ast);
+            ArrayList data = changeToArray(ast);
             string group = appendData(groups);
             string city = appendData(location);
             string attribute = appendData(property);
-            string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.PP IN (" + attribute + ") ");
-            string command = "SELECT DISTINCT D.DID,D.UName,D.UURL,D.DName,D.DURL, D.Salary, D.SalaryURL, D.MinScore, ("
+            string condition = (isCHU ? "AND D.UName = '中華大學' " : "AND D.City IN (" + city + ") " + "AND D.Property IN (" + attribute + ") ");
+            string command = "SELECT DISTINCT D.DID,D.ExamURL,D.UName,D.UURL,D.DName,D.DURL, D.Salary, D.SalaryURL, D.MinScore, ("
                     + oldScore[0].ToString()+"*D.EW1+"+ oldScore[1].ToString()+"*D.EW2+"
                     + oldScore[2].ToString()+"*D.EW3+"+ oldScore[3].ToString()+"*D.EW4+"
                     + oldScore[4].ToString()+"*D.EW5+"+ oldScore[5].ToString()+"*D.EW6+"
                     + oldScore[6].ToString()+"*D.EW7+"+ oldScore[7].ToString()+"*D.EW8+"
                     + oldScore[8].ToString()+"*D.EW9+"+ oldScore[9].ToString()+"*D.EW10) As YourScore "+
-                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+ //condition +
+                    "FROM D,DC,CG WHERE  D.DID=DC.DID AND DC.CNAME=CG.CNAME AND CG.GNAME IN ("+group+") "+ condition +
                     "AND D.ELLEVEL >= '" + EL + "' AND D.TL1 <= " + level[0].ToString() + " " +
                     "AND D.TL2 <= "+ level[1].ToString() +" AND D.TL3 <= "+level[2].ToString()+" "+
                     "AND D.TL4 <= "+level[3].ToString()+" AND D.TL5 <= "+level[4].ToString()+" "+
@@ -155,21 +157,19 @@ namespace PredictionAPI.Models
             return command;
         }
 
-        private string[] changeToArray(Ast ast)
+        private ArrayList changeToArray(Ast ast)
         {
-            string[] score = {  ast.Chinese == null? "null" :ast.Chinese,
-                                ast.English == null?"null":ast.English,
-                                ast.Math_A == null?"null":ast.Math_A,
-                                ast.Math_B == null?"null":ast.Math_B,
-                                ast.History == null?"null":ast.History,
-                                ast.Geographic== null?"null":ast.Geographic,
-                                ast.Citizen_and_Society== null?"null":ast.Citizen_and_Society,
-                                ast.Physics== null?"null":ast.Physics,
-                                ast.Chemistry== null?"null":ast.Chemistry,
-                                ast.Biology== null?"null":ast.Biology
-                              };
-            
-            return score;
+            string[] score = { ast.Chinese ,ast.English , ast.Math_A ,ast.Math_B ,
+                                 ast.History,ast.Geographic , ast.Citizen_and_Society,
+                                 ast.Physics,ast.Chemistry,ast.Biology };
+            ArrayList list = new ArrayList();
+
+            for (int i = 0; i < score.Length; i++)
+            {
+                if (String.IsNullOrEmpty(score[i])) list.Add("null");
+                else list.Add(score[i]);
+            }
+            return list;
         }
 
         private string appendData(List<string> original)

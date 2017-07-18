@@ -10,7 +10,7 @@ namespace PredictionAPI.Models
     {
         public int status { get; set; }
         public T input { get; set; }
-        public string Messege { get; set; }
+        public string message { get; set; }
     }
 
 }
