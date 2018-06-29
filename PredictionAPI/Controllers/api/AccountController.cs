@@ -130,56 +130,46 @@ namespace PredictionAPI.Controllers.api
         {
             db = new DBOperationService();
             HttpResponseMessage result = null;
-            try
-            {
+            try {
                 var data = db.FindUser(email);
                 var saveData = new NameValueCollection();
                 saveData["email"] = data.Email;
-                var cookie = new CookieHeaderValue("session", saveData)
-                {
+                var cookie = new CookieHeaderValue("session", saveData){
                     Domain = Request.RequestUri.Host,
                     Path = "/",
                     Expires = DateTime.Now.AddMinutes(60)
                 };
-                TopObject<string> returnData = new TopObject<string>()
-                {
+                TopObject<string> returnData = new TopObject<string>(){
                     status = Convert.ToInt32(HttpStatusCode.OK),
                     input = email,
                     message = "登入成功"
                 };
                 //傳cookie+登入成功訊息
-                result = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new ObjectContent<TopObject<string>>(returnData, new JsonMediaTypeFormatter())                      
+                result = new HttpResponseMessage(HttpStatusCode.OK){
+                    Content = new ObjectContent<TopObject<string>>(returnData, new JsonMediaTypeFormatter())
                 };
                 result.Headers.AddCookies(new CookieHeaderValue[] { cookie });
                 return result;
             }
-            catch(EmailNotVertifyException ex)
-            {
-                TopObject<string> mesg = new TopObject<string>()
-                {
+            catch(EmailNotVertifyException ex) {
+                TopObject<string> mesg = new TopObject<string>(){
                     input = email,
                     status = Convert.ToInt32(HttpStatusCode.Unauthorized),
                     message = msg
                 };
-                result = new HttpResponseMessage(HttpStatusCode.Unauthorized)
-                {
+                result = new HttpResponseMessage(HttpStatusCode.Unauthorized){
                     Content = new ObjectContent<TopObject<string>>(mesg, new JsonMediaTypeFormatter())
                 };
                 return result;
             }
-            catch(UserNotFoundException ex)
-            {
-                TopObject<string> obj = new TopObject<string>()
-                {
+            catch(UserNotFoundException ex) {
+                TopObject<string> obj = new TopObject<string>(){
                     status = Convert.ToInt32(HttpStatusCode.NotFound),
                     input = email,
                     message = "沒有這位使用者或Email輸入錯誤，請先註冊再登入"
                 };
                 //送註冊JSON訊息
-                var errorData = new HttpResponseMessage(HttpStatusCode.NotFound)
-                {
+                var errorData = new HttpResponseMessage(HttpStatusCode.NotFound){
                     Content = new ObjectContent<TopObject<string>>(obj,new JsonMediaTypeFormatter())
                 };
                 return errorData;

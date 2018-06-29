@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
@@ -84,7 +84,7 @@ namespace PredictionAPI.Models
         }
 
         /// <summary>
-        /// 
+        /// 搜尋符合條件之校系
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -124,6 +124,19 @@ namespace PredictionAPI.Models
             }
         }
 
+        /// <summary>
+        /// 組SQL字串
+        /// </summary>
+        /// <param name="ast"></param>
+        /// <param name="groups"></param>
+        /// <param name="oldScore"></param>
+        /// <param name="level"></param>
+        /// <param name="EL"></param>
+        /// <param name="expectedSalary"></param>
+        /// <param name="location"></param>
+        /// <param name="property"></param>
+        /// <param name="isCHU"></param>
+        /// <returns></returns>
         private string appendSQLString(Ast ast,List<string> groups,ArrayList oldScore, 
             ArrayList level, string EL,int expectedSalary, List<string> location, List<string> property, bool isCHU)
         {
@@ -157,6 +170,11 @@ namespace PredictionAPI.Models
             return command;
         }
 
+        /// <summary>
+        /// 將物件轉換成陣列
+        /// </summary>
+        /// <param name="ast"></param>
+        /// <returns></returns>
         private ArrayList changeToArray(Ast ast)
         {
             string[] score = { ast.Chinese ,ast.English , ast.Math_A ,ast.Math_B ,
@@ -172,6 +190,11 @@ namespace PredictionAPI.Models
             return list;
         }
 
+        /// <summary>
+        /// 拼接字串
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
         private string appendData(List<string> original)
         {
             string temp = null;
