@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -18,7 +18,7 @@ namespace PredictionAPI.Models
 
         public QueryData()
         {
-            conStr = ConfigurationManager.ConnectionStrings["PredictionADO"].ConnectionString;
+            conStr = ConfigurationManager.ConnectionStrings["Prediction"].ConnectionString;
             conn = new SqlConnection(conStr);
             sqlcmd = new SqlCommand();
             buffer = null;

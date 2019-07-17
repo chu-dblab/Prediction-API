@@ -69,7 +69,7 @@ namespace PredictionAPI.Models
             for (int i = 0; i < 6; i++)
             {
                 sqlCom = "SELECT Grade1,Grade2,Grade3,Grade4,Grade5 " +
-                    "FROM T WHERE Tname = '" + subjectOfGSAT[i] + "'";
+                    "FROM T WHERE TName = '" + subjectOfGSAT[i] + "'";
                 dt = query.search(sqlCom);
                 if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade1"].ToString())) LV = 0;
                 else if (scoreOfGSAT[i] < Convert.ToInt32(dt.Rows[0]["Grade2"].ToString())) LV = 1;
