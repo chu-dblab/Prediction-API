@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -21,8 +21,8 @@ namespace PredictionAPI
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            //var corsAttr = new EnableCorsAttribute("http://localhost/Prediction", "*", "*");
-            //config.EnableCors(corsAttr);
+            var corsAttr = new EnableCorsAttribute("http://localhost:53364", "*", "*");
+            config.EnableCors(corsAttr);
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
         }
